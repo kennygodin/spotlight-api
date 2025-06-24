@@ -1,28 +1,44 @@
 import express, { NextFunction, Request, Response } from 'express';
 import { clerkMiddleware, requireAuth } from '@clerk/express';
+import fileUpload from 'express-fileupload';
 
-import { errorHandler } from './middlewares/errorHandler';
 import ratelimiter from './middlewares/rateLimiter';
+import errorHandler from './middlewares/errorHandler';
 
 import itemRoutes from './routes/item.route';
-import userRoutes from './routes/user.route';
+import postRoutes from './routes/post.route';
+import uploadRoutes from './routes/upload.route';
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(clerkMiddleware());
 app.use(ratelimiter);
-app.use(express.json());
+app.use(
+  fileUpload({
+    limits: { fileSize: 50 * 1024 * 1024 },
+    useTempFiles: true,
+    tempFileDir: '/tmp/',
+  }),
+);
 
 // Routes
 app.use('/api/items', itemRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
+app.use('/api/uploads', uploadRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ message: 'Healthy' });
 });
 
 app.get('/api/protected', requireAuth(), (req, res) => {
-  res.send('This is a protected route');
+  const auth = req.auth!();
+  const userId = auth?.userId;
+  res.json({
+    message: 'This is a protected route',
+    userId: userId,
+  });
 });
 
 app.use(errorHandler);

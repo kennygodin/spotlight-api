@@ -7,31 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  clerkId   String   @unique
-  email     String   @unique
-  name      String?
-  username  String?  @unique
-  avatar    String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  posts     Post[]
-  likes     Like[]
-  comments  Comment[]
-  followers Follow[] @relation("UserFollowers")
-  following Follow[] @relation("UserFollowing")
-
-  @@map("users")
-}
-
 model Post {
   id        Int      @id @default(autoincrement())
   content   String?
   imageUrl  String
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -42,11 +22,10 @@ model Post {
 }
 
 model Like {
-  id     Int  @id @default(autoincrement())
-  userId Int
+  id     Int    @id @default(autoincrement())
+  userId String
   postId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
   @@map("likes")
@@ -55,9 +34,8 @@ model Like {
 model Comment {
   id        Int      @id @default(autoincrement())
   content   String
-  userId    Int
+  userId    String
   postId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
 
@@ -65,11 +43,9 @@ model Comment {
 }
 
 model Follow {
-  id          Int  @id @default(autoincrement())
-  followerId  Int
-  followingId Int
-  follower    User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
-  following   User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+  id          Int    @id @default(autoincrement())
+  followerId  String
+  followingId String
 
   @@unique([followerId, followingId])
   @@map("follows")
