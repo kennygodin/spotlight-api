@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { requireAuth } from '@clerk/express';
 
-import { createPost, createPostWithUrl } from '../controllers/post.controller';
+import { createPost } from '../controllers/post.controller';
 
 const router = Router();
 
@@ -16,6 +16,5 @@ router.post(
   },
   createPost,
 );
-
 
 export default router;

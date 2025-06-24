@@ -72,31 +72,69 @@ export const createPost = async (
   }
 };
 
-export const createPostWithUrl = async (
+export const getUserPosts = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
-  const { imageUrl, content } = req.body;
   const auth = req.auth!();
-  const userId = auth?.userId || 'user_2ybJKsbykf9eUcrQx2rDh3YiOnU';
+  const userId = auth?.userId;
 
   if (!userId) {
     res.status(401).json({ message: 'Unauthorized' });
     return;
   }
 
-  if (!imageUrl) {
-    res.status(400).json({ message: 'Image is required' });
-    return;
-  }
-
   try {
-    const post = await db.post.create({
-      data: { imageUrl, content, userId },
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
+    const posts = await db.post.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      skip,
+      take: limit,
+      include: {
+        user: true,
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+          },
+        },
+      },
     });
 
-    res.status(201).json({ status: 'success', message: 'Post created', post });
+    const totalPosts = await db.post.count({
+      where: {
+        userId,
+      },
+    });
+
+    const totalPages = Math.ceil(totalPosts / limit);
+    const hasNextPage = page < totalPages;
+    const hasPrevPage = page > 1;
+
+    res.status(200).json({
+      status: 'success',
+      message: 'User posts fetched',
+      data: {
+        posts,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalPosts,
+          hasNextPage,
+          hasPrevPage,
+          limit,
+        },
+      },
+    });
   } catch (error) {
     next(error);
   }

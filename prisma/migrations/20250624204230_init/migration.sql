@@ -1,11 +1,11 @@
 -- CreateTable
 CREATE TABLE "users" (
-    "id" SERIAL NOT NULL,
-    "clerkId" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "name" TEXT,
+    "id" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
     "username" TEXT,
-    "avatar" TEXT,
+    "email" TEXT NOT NULL,
+    "clerkId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -17,7 +17,7 @@ CREATE TABLE "posts" (
     "id" SERIAL NOT NULL,
     "content" TEXT,
     "imageUrl" TEXT NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -27,7 +27,7 @@ CREATE TABLE "posts" (
 -- CreateTable
 CREATE TABLE "likes" (
     "id" SERIAL NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
     "postId" INTEGER NOT NULL,
 
     CONSTRAINT "likes_pkey" PRIMARY KEY ("id")
@@ -37,7 +37,7 @@ CREATE TABLE "likes" (
 CREATE TABLE "comments" (
     "id" SERIAL NOT NULL,
     "content" TEXT NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
     "postId" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -47,20 +47,20 @@ CREATE TABLE "comments" (
 -- CreateTable
 CREATE TABLE "follows" (
     "id" SERIAL NOT NULL,
-    "followerId" INTEGER NOT NULL,
-    "followingId" INTEGER NOT NULL,
+    "followerId" TEXT NOT NULL,
+    "followingId" TEXT NOT NULL,
 
     CONSTRAINT "follows_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_clerkId_key" ON "users"("clerkId");
+CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
+CREATE UNIQUE INDEX "users_clerkId_key" ON "users"("clerkId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "likes_userId_postId_key" ON "likes"("userId", "postId");
