@@ -72,7 +72,7 @@ export const createPost = async (
   }
 };
 
-export const getUserPosts = async (
+export const getLoggedInUserPosts = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -86,10 +86,6 @@ export const getUserPosts = async (
   }
 
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const skip = (page - 1) * limit;
-
     const posts = await db.post.findMany({
       where: {
         userId,
@@ -97,8 +93,6 @@ export const getUserPosts = async (
       orderBy: {
         createdAt: 'desc',
       },
-      skip,
-      take: limit,
       include: {
         user: true,
         _count: {
@@ -110,29 +104,11 @@ export const getUserPosts = async (
       },
     });
 
-    const totalPosts = await db.post.count({
-      where: {
-        userId,
-      },
-    });
-
-    const totalPages = Math.ceil(totalPosts / limit);
-    const hasNextPage = page < totalPages;
-    const hasPrevPage = page > 1;
-
     res.status(200).json({
       status: 'success',
       message: 'User posts fetched',
       data: {
         posts,
-        pagination: {
-          currentPage: page,
-          totalPages,
-          totalPosts,
-          hasNextPage,
-          hasPrevPage,
-          limit,
-        },
       },
     });
   } catch (error) {

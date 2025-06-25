@@ -1,22 +1,22 @@
-import cloudinary from "../config/cloudinary.config";
-import fs from "fs";
+import cloudinary from '../config/cloudinary.config';
+import fs from 'fs';
 
 interface UploadOptions {
-  resource_type?: "auto" | "image" | "video" | "raw";
+  resource_type?: 'auto' | 'image' | 'video' | 'raw';
   folder?: string;
 }
 
 export const uploadToCloudinary = async (
   filePath: string,
-  options: UploadOptions = {}
+  options: UploadOptions = {},
 ) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
-      resource_type: "auto",
+      resource_type: 'auto',
       ...options,
     });
 
-    console.log(result);
+    // console.log(result);
 
     fs.unlinkSync(filePath);
 
@@ -26,10 +26,10 @@ export const uploadToCloudinary = async (
       resourceType: result.resource_type,
     };
   } catch (error) {
-    console.error("Error while uploading to cloudinary", error);
+    console.error('Error while uploading to cloudinary', error);
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
-    throw new Error("Error while uploading to cloudinary");
+    throw new Error('Error while uploading to cloudinary');
   }
 };

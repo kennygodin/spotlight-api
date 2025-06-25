@@ -1,13 +1,15 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
 import { requireAuth } from '@clerk/express';
-import { manageUserWebhooks } from '../controllers/user.controller';
+import {
+  getCurrentUser,
+  updateUserData,
+  updateUserImageUrl,
+} from '../controllers/user.controller';
 
 const router = Router();
 
-router.post(
-  '/webhooks',
-  express.raw({ type: 'application/json' }),
-  manageUserWebhooks,
-);
+router.get('/current-user', requireAuth(), getCurrentUser);
+router.put('/update-user', requireAuth(), updateUserData);
+router.put('/update-user-image', requireAuth(), updateUserImageUrl);
 
 export default router;

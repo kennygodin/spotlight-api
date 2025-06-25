@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { requireAuth } from '@clerk/express';
 
-import { createPost } from '../controllers/post.controller';
+import {
+  createPost,
+  getLoggedInUserPosts,
+} from '../controllers/post.controller';
 
 const router = Router();
 
@@ -15,6 +18,16 @@ router.post(
     next();
   },
   createPost,
+);
+
+router.get(
+  '/my-posts',
+  requireAuth(),
+  (req: Request, res: Response, next: NextFunction) => {
+    console.log('CURRENT USER ENDPOINT HIT');
+    next();
+  },
+  getLoggedInUserPosts,
 );
 
 export default router;

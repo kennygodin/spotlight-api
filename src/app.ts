@@ -1,4 +1,4 @@
-import express, {  Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import { clerkMiddleware, requireAuth } from '@clerk/express';
 import fileUpload from 'express-fileupload';
 
@@ -7,7 +7,8 @@ import errorHandler from './middlewares/errorHandler';
 
 import itemRoutes from './routes/item.route';
 import postRoutes from './routes/post.route';
-import manageUserWebhooksRoute from './routes/user.route';
+import userRoutes from './routes/user.route';
+import manageUserWebhooksRoute from './routes/webhook.route';
 import uploadRoutes from './routes/upload.route';
 
 const app = express();
@@ -29,6 +30,7 @@ app.use(
 app.use('/api/items', itemRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/uploads', uploadRoutes);
+app.use('/api/users', userRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ message: 'Healthy' });
