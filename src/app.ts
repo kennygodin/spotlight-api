@@ -4,6 +4,7 @@ import fileUpload from 'express-fileupload';
 
 import ratelimiter from './middlewares/rateLimiter';
 import errorHandler from './middlewares/errorHandler';
+import job from './config/cron.js';
 
 import itemRoutes from './routes/item.route';
 import postRoutes from './routes/post.route';
@@ -12,6 +13,8 @@ import manageUserWebhooksRoute from './routes/webhook.route';
 import uploadRoutes from './routes/upload.route';
 
 const app = express();
+
+if (process.env.NODE_ENV === 'production') job.start();
 
 app.use('/api', manageUserWebhooksRoute);
 app.use(express.json());
