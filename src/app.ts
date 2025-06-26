@@ -4,7 +4,7 @@ import fileUpload from 'express-fileupload';
 
 import ratelimiter from './middlewares/rateLimiter';
 import errorHandler from './middlewares/errorHandler';
-import job from './config/cron.js';
+import job from './config/cron';
 
 import itemRoutes from './routes/item.route';
 import postRoutes from './routes/post.route';
