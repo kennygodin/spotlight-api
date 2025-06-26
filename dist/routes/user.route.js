@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const express_2 = require("@clerk/express");
+const user_controller_1 = require("../controllers/user.controller");
+const router = (0, express_1.Router)();
+router.get('/current-user', (0, express_2.requireAuth)(), user_controller_1.getCurrentUser);
+router.put('/update-user', (0, express_2.requireAuth)(), user_controller_1.updateUserData);
+router.put('/update-user-image', (0, express_2.requireAuth)(), user_controller_1.updateUserImageUrl);
+exports.default = router;

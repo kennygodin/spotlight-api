@@ -21,7 +21,7 @@ export const manageUserWebhooks = async (req: Request, res: Response) => {
         },
       });
 
-      console.log('Synced user to DB:', newUser.id);
+      console.log('Synced user to DB:', newUser.id); 
     }
 
     res.status(200).json({ status: 'success', message: 'Webhook received' });
