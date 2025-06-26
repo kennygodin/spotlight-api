@@ -4,7 +4,7 @@ import { requireAuth } from '@clerk/express';
 import {
   createPost,
   getFeedPosts,
-  getLoggedInUserPosts,
+  getUserPosts,
 } from '../controllers/post.controller';
 
 const router = Router();
@@ -21,13 +21,13 @@ router.post(
 );
 
 router.get(
-  '/my-posts',
+  '/user/:clerkId',
   requireAuth(),
   (req: Request, res: Response, next: NextFunction) => {
     console.log('MY POSTS ENDPOINT HIT');
     next();
   },
-  getLoggedInUserPosts,
+  getUserPosts,
 );
 
 router.get(

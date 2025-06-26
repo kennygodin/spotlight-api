@@ -72,11 +72,12 @@ export const createPost = async (
   }
 };
 
-export const getLoggedInUserPosts = async (
+export const getUserPosts = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
+  const { clerkId } = req.params;
   const auth = req.auth!();
   const userId = auth?.userId;
 
@@ -85,10 +86,15 @@ export const getLoggedInUserPosts = async (
     return;
   }
 
+  if (!clerkId) {
+    res.status(400).json({ message: 'User ID is required' });
+    return;
+  }
+
   try {
     const posts = await db.post.findMany({
       where: {
-        userId,
+        userId: clerkId,
       },
       orderBy: {
         createdAt: 'desc',
