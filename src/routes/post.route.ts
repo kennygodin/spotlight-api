@@ -3,6 +3,7 @@ import { requireAuth } from '@clerk/express';
 
 import {
   createPost,
+  getFeedPosts,
   getLoggedInUserPosts,
 } from '../controllers/post.controller';
 
@@ -12,9 +13,8 @@ router.post(
   '/create',
   requireAuth(),
   (req: Request, res: Response, next: NextFunction) => {
-    console.log('🛑 Request reached create post endpoint');
-    console.log('Files:', req.files ? Object.keys(req.files) : 'No files');
-    console.log('Body:', req.body);
+    console.log('CREATE POST ENDPOINT HIT');
+
     next();
   },
   createPost,
@@ -24,10 +24,20 @@ router.get(
   '/my-posts',
   requireAuth(),
   (req: Request, res: Response, next: NextFunction) => {
-    console.log('CURRENT USER ENDPOINT HIT');
+    console.log('MY POSTS ENDPOINT HIT');
     next();
   },
   getLoggedInUserPosts,
+);
+
+router.get(
+  '/feed-posts',
+  requireAuth(),
+  (req: Request, res: Response, next: NextFunction) => {
+    console.log('FEED POST ENDPOINT HIT');
+    next();
+  },
+  getFeedPosts,
 );
 
 export default router;
