@@ -6,11 +6,11 @@ import ratelimiter from './middlewares/rateLimiter';
 import errorHandler from './middlewares/errorHandler';
 import job from './config/cron';
 
-import itemRoutes from './routes/item.route';
 import postRoutes from './routes/post.route';
 import userRoutes from './routes/user.route';
 import manageUserWebhooksRoute from './routes/webhook.route';
 import uploadRoutes from './routes/upload.route';
+import followRoutes from './routes/follow.route';
 
 const app = express();
 
@@ -30,10 +30,11 @@ app.use(
 );
 
 // Routes
-app.use('/api/items', itemRoutes);
+
 app.use('/api/posts', postRoutes);
 app.use('/api/uploads', uploadRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/follows', followRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ message: 'Healthy' });
